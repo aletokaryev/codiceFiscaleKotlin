@@ -90,7 +90,8 @@ class CodiceFiscaleViewModel: ViewModel() {
     private fun calcoloNome(nome: String): String {
         val consonants = getFilteredConsonants(nome)
         return when {
-            consonants.length >= 3 -> consonants.take(3)
+            consonants.length >= 4 -> "${consonants[0]}${consonants[2]}${consonants[3]}"
+            consonants.length == 3 -> consonants.take(3)
             consonants.length == 2 -> consonants + "X"
             consonants.length == 1 -> consonants + "XX"
             else -> "XXX"
@@ -113,15 +114,10 @@ class CodiceFiscaleViewModel: ViewModel() {
 
     private fun getFilteredConsonants(s: String): String {
         val filteredConsonants = s.filter { it.isLetter() && it !in "AEIOUaeiou" }
-        return removeDuplicates(filteredConsonants).uppercase()
+        return filteredConsonants
     }
 
 
-    private fun removeDuplicates(s: String): String {
-        val charArray = s.toCharArray()
-        val uniqueChars = charArray.distinct()
-        return uniqueChars.joinToString("")
-    }
 
     fun reset(){
         _giorno.value = ""
