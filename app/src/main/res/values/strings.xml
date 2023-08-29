@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CalcoloCF</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="next">Next</string>
+    <string name="calcola_codice">Calcola Codice</string>
+    <string name="codice_fiscale">Codice Fiscale</string>
+</resources>
