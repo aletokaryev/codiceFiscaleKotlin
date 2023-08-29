@@ -103,7 +103,7 @@ class CodiceFiscaleViewModel: ViewModel() {
     }
 
     private fun checkGiorno(giorno: String?, sesso: String): String {
-        val giornoValue = giorno?.toIntOrNull() ?: 1 // Default value or handle the case accordingly
+        val giornoValue = giorno?.toIntOrNull() ?: 1
         val giornoAdjusted = if (sesso == "F") giornoValue + 40 else giornoValue
         return giornoAdjusted.toString().padStart(2, '0')
     }
