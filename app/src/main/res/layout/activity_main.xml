@@ -8,9 +8,9 @@
 
     <TextView
         android:id="@+id/codFisLive"
-        android:layout_width="171dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="120dp"
+        android:layout_width="222dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="92dp"
         android:text="CodFis"
         android:textAlignment="center"
         android:textSize="18sp"
