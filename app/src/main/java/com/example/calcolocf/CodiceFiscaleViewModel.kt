@@ -53,6 +53,9 @@ class CodiceFiscaleViewModel: ViewModel() {
     val codiceFiscale: LiveData<String>
         get() = _codiceFiscale
 
+    init {
+        _codiceFiscale.value = ""
+    }
 
     fun calcoloCodiceFiscale(){
 
@@ -112,6 +115,7 @@ class CodiceFiscaleViewModel: ViewModel() {
         val filteredConsonants = s.filter { it.isLetter() && it !in "AEIOUaeiou" }
         return removeDuplicates(filteredConsonants).uppercase()
     }
+
 
     private fun removeDuplicates(s: String): String {
         val charArray = s.toCharArray()

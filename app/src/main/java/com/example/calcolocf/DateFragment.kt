@@ -1,11 +1,14 @@
 package com.example.calcolocf
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -30,6 +33,85 @@ class DateFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.meseSpinner.adapter = adapter
 
+        binding.giornoEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val giorno = s.toString()
+
+                if (giorno.isBlank()) {
+                    binding.giornoEditText.error = "Il giorno non può essere vuoto"
+                    return
+                }
+
+                viewModel.setGiorno(giorno)
+                viewModel.calcoloCodiceFiscale()
+            }
+        })
+
+        binding.meseSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val mese = parent?.getItemAtPosition(position).toString()
+
+                if (mese.isBlank()) {
+                    binding.meseSpinner.rootView.showSnackbar("Il mese non può essere vuoto")
+                    return
+                }
+
+                viewModel.setMese(mese)
+                viewModel.calcoloCodiceFiscale()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
+        binding.sessoEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val sesso = s.toString()
+
+                if (sesso.isBlank()) {
+                    binding.sessoEditText.error = "Inserisci sesso"
+                    return
+                }
+
+                viewModel.setGiorno(sesso)
+                Log.d("Sesso-Viewmodel", viewModel.sesso.value.toString())
+                viewModel.calcoloCodiceFiscale()
+            }
+        })
+
+
+
+        binding.annoEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val anno = s.toString()
+
+                if (anno.isBlank()) {
+                    binding.annoEditText.error = "L'anno non può essere vuoto"
+                    return
+                }
+
+                viewModel.setAnno(anno)
+                viewModel.calcoloCodiceFiscale()
+            }
+        })
 
         binding.nextButton.setOnClickListener {
 

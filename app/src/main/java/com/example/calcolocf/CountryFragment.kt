@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -28,6 +29,30 @@ class CountryFragment : Fragment() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listaComuni)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.comuniSpinner.adapter = adapter
+
+        binding.comuniSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val comune = parent?.getItemAtPosition(position).toString()
+
+                if (comune.isBlank()) {
+                    binding.comuniSpinner.rootView.showSnackbar("Il mese non può essere vuoto")
+                    return
+                }
+
+                viewModel.setComune(comune)
+                viewModel.calcoloCodiceFiscale()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
 
         binding.nextButton.setOnClickListener {
             val selectedCoutry = binding.comuniSpinner.selectedItem.toString()
