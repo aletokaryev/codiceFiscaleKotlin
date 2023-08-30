@@ -12,9 +12,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.calcolocf.dataSets.comuniData
 import com.example.calcolocf.dataSets.monthsData
 import com.example.calcolocf.databinding.FragmentDateBinding
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class DateFragment : Fragment() {
     private var _binding: FragmentDateBinding? = null
@@ -28,44 +32,52 @@ class DateFragment : Fragment() {
     ): View? {
         _binding = FragmentDateBinding.inflate(inflater, container, false)
 
-        val monthsList = monthsData.keys.toList()
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, monthsList)
+        val listGeneri = arrayOf("M", "F", "Altro")
+
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listGeneri)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.meseSpinner.adapter = adapter
+        binding.sessoSpinner.adapter = adapter
 
-        binding.giornoEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val today = Calendar.getInstance()
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val giorno = s.toString()
-
-                if (giorno.isBlank()) {
-                    binding.giornoEditText.error = "Il giorno non può essere vuoto"
-                    return
-                }
-
-                viewModel.setGiorno(giorno)
-                viewModel.calcoloCodiceFiscale()
+        binding.datePicker.init(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)) { _, year, monthOfYear, dayOfMonth ->
+            val selectedDate = Calendar.getInstance().apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, monthOfYear)
+                set(Calendar.DAY_OF_MONTH, dayOfMonth)
             }
-        })
 
-        binding.meseSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            val formattedDate = dateFormatter.format(selectedDate.time)
+            val splitDate = formattedDate.split("/")
+            val day = splitDate[0]
+            val month = splitDate[1]
+            val year = splitDate[2]
+
+            viewModel.setGiorno(day)
+            viewModel.setMese(month)
+            viewModel.setAnno(year)
+            Log.d("Giorno-Viewmodel", viewModel.giorno.value.toString())
+            Log.d("Mese-Viewmodel", viewModel.mese.value.toString())
+            Log.d("Anno-Viewmodel", viewModel.anno.value.toString())
+            viewModel.calcoloCodiceFiscale()
+        }
+
+        binding.sessoSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                val mese = parent?.getItemAtPosition(position).toString()
+                val sesso = parent?.getItemAtPosition(position).toString()
 
-                if (mese.isBlank()) {
-                    binding.meseSpinner.rootView.showSnackbar("Il mese non può essere vuoto")
+                if (sesso.isBlank()) {
+                    binding.sessoSpinner.rootView.showSnackbar("Scegli un sesso valido")
                     return
                 }
 
-                viewModel.setMese(mese)
+                viewModel.setSesso(sesso)
                 viewModel.calcoloCodiceFiscale()
             }
 
@@ -74,92 +86,28 @@ class DateFragment : Fragment() {
             }
         }
 
-        binding.sessoEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val sesso = s.toString()
-
-                if (sesso.isBlank()) {
-                    binding.sessoEditText.error = "Inserisci sesso"
-                    return
-                }
-
-                viewModel.setGiorno(sesso)
-                Log.d("Sesso-Viewmodel", viewModel.sesso.value.toString())
-                viewModel.calcoloCodiceFiscale()
-            }
-        })
-
-
-
-        binding.annoEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                val anno = s.toString()
-
-                if (anno.isBlank()) {
-                    binding.annoEditText.error = "L'anno non può essere vuoto"
-                    return
-                }
-
-                viewModel.setAnno(anno)
-                viewModel.calcoloCodiceFiscale()
-            }
-        })
 
         binding.nextButton.setOnClickListener {
-
-            if (binding.giornoEditText.text.isBlank()) {
-                binding.giornoEditText.error = "Il giorno non può essere vuoto"
+            val sessoSelezionato = binding.sessoSpinner.selectedItem.toString()
+            if (sessoSelezionato.isBlank()) {
+                binding.sessoSpinner.rootView.showSnackbar("Scegli un sesso valido")
                 return@setOnClickListener
             }
-            viewModel.setGiorno(binding.giornoEditText.text.toString())
-            Log.d("Giorno-Viewmodel", viewModel.giorno.value.toString())
-
-            val selectedMonth = binding.meseSpinner.selectedItem.toString()
-            if (selectedMonth.isBlank()) {
-                binding.meseSpinner.rootView.showSnackbar("Il mese non può essere vuoto")
-                return@setOnClickListener
-            }
-            viewModel.setMese(selectedMonth)
-            Log.d("Mese-Viewmodel", viewModel.mese.value.toString())
-
-
-            if (binding.annoEditText.text.isBlank()) {
-                binding.annoEditText.error = "L'anno non può essere vuoto"
-                return@setOnClickListener
-            }
-            viewModel.setAnno(binding.annoEditText.text.toString())
-            Log.d("Anno-Viewmodel", viewModel.anno.value.toString())
-
-
-            if (binding.sessoEditText.text.isBlank()) {
-                binding.sessoEditText.error = "Inserisci sesso"
-                return@setOnClickListener
-            }
-
-            viewModel.setSesso(binding.sessoEditText.text.toString())
+            viewModel.setSesso(sessoSelezionato)
             viewModel.calcoloCodiceFiscale()
-            Log.d("Sesso-Viewmodel", viewModel.sesso.value.toString())
+
             findNavController().navigate(R.id.action_dateFragment_to_countryFragment)
         }
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
-    fun View.showSnackbar(message: String) {
+    private fun View.showSnackbar(message: String) {
         Snackbar.make(this, message, Snackbar.LENGTH_SHORT).show()
     }
-
 }
