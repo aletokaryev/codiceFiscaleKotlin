@@ -5,4 +5,6 @@
     <string name="next">Next</string>
     <string name="calcola_codice">Calcola Codice</string>
     <string name="codice_fiscale">Codice Fiscale</string>
+    <string name="sesso">Sesso</string>
+    <string name="data_di_nascita">Data di Nascita</string>
 </resources>
