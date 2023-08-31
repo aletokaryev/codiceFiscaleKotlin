@@ -61,10 +61,6 @@ class SurnameFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            viewModel.setCognome(binding.cognomeEditText.text.toString())
-            viewModel.calcoloCodiceFiscale()
-
-
             Log.d("Surname-Viewmodel", viewModel.cognome.value.toString())
             findNavController().navigate(R.id.action_surnameFragment_to_nameFragment)
         }

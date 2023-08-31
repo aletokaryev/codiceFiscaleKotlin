@@ -1,6 +1,5 @@
 package com.example.calcolocf
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -131,8 +130,6 @@ class CodiceFiscaleViewModel: ViewModel() {
         _sesso.value = ""
     }
 
-
-    //Da modificare in un file esterno; calendar da aggiungere
     private fun calcolaCIN(codiceFiscale: String): Char {
         val caratteriDispari = hashMapOf(
             '0' to 1, '1' to 0, '2' to 5, '3' to 7, '4' to 9, '5' to 13,
