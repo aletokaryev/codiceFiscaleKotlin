@@ -25,10 +25,12 @@ class CodFiscaleLive : Fragment() {
     ): View? {
         _binding = FragmentCodFiscaleLiveBinding.inflate(inflater, container, false)
 
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewmodel = viewModel
 
-        viewModel.codiceFiscale.observe(viewLifecycleOwner, Observer { nuovoCodiceFiscale ->
-            binding.codFiscaleLive.text = nuovoCodiceFiscale
-        })
+//        viewModel.codiceFiscale.observe(viewLifecycleOwner, Observer { nuovoCodiceFiscale ->
+//            binding.codFiscaleLive.text = nuovoCodiceFiscale
+//        })
 
         return binding.root
 
